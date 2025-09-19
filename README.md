@@ -12,6 +12,11 @@
 
 ## 実行方法
 
+開発環境でコンテナを起動する前に、依存関係がまだ無い場合は Composer を以下のように実行して `vendor/` を生成してください。
+```bash
+docker run --rm -v $(pwd):/app composer install
+```
+
 ### 開発コンテナ（dev イメージ）
 
 - ソースをホストからマウントしたまま Apache を起動します。
