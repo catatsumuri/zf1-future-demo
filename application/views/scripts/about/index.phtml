@@ -1,0 +1,40 @@
+<div class="page-header">
+    <h1>About This Demo</h1>
+    <p class="text-muted">Modernizing Zend Framework 1 projects with containers, Composer, and Bootstrap.</p>
+</div>
+
+<div class="row">
+    <?php foreach ($this->highlights as $highlight): ?>
+        <div class="col-sm-6 col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon <?php echo $this->escape($highlight['icon']); ?>" aria-hidden="true"></span>
+                        <?php echo $this->escape($highlight['title']); ?>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <p><?php echo $this->escape($highlight['body']); ?></p>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Getting Help</h3>
+    </div>
+    <div class="panel-body">
+        <p>Need to extend this starter? Check <code>AGENTS.md</code> for contributor guidelines and refer to the README for Docker commands. Community knowledge bases include:</p>
+        <ul class="list-unstyled">
+            <li><span class="glyphicon glyphicon-book"></span> <a href="https://framework.zend.com/manual/1.12/en/" target="_blank" rel="noopener">Zend Framework 1 Manual</a></li>
+            <li><span class="glyphicon glyphicon-comment"></span> <a href="https://github.com/shardj/zf1-future/discussions" target="_blank" rel="noopener">zf1-future Discussions</a></li>
+            <li><span class="glyphicon glyphicon-wrench"></span> <a href="https://docs.docker.com/" target="_blank" rel="noopener">Docker Documentation</a></li>
+        </ul>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-default" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Back to Home</a>
+</p>

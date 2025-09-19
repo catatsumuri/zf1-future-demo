@@ -9,6 +9,9 @@
         body {
             background-color: #f7f8fa;
         }
+        .panel-feature .panel-heading {
+            font-size: 16px;
+        }
         footer {
             margin-top: 48px;
             padding: 24px 0;
@@ -22,6 +25,10 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">ZF1 Future Demo</a>
             </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
         </div>
     </nav>
     <main class="container">
@@ -32,5 +39,17 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3gJwYp2JZr+T1xvOT+Q9G6v5joctWcYxRykWPF6vKE8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-fm0C40SwQgqi1P0uh2znLXCxGr8pczTYng3IvuX4Ykzj0EL2Cw7nUksnktdM8xGc" crossorigin="anonymous"></script>
+    <script>
+        // Highlight active navigation item based on pathname
+        $(function () {
+            var path = window.location.pathname.replace(/\/$/, '') || '/';
+            $('.navbar-nav a').each(function () {
+                var href = $(this).attr('href');
+                if (href === path) {
+                    $(this).parent().addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
