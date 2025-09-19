@@ -1,36 +1,59 @@
-# zf1-future Demo App
+# zf1-future デモアプリ
 
-This repository contains a minimal Zend Framework 1 Future (ZF1-Future) application that runs on PHP 8.1 inside Docker. The stack ships with a Bootstrap 3 + jQuery landing page that links to useful framework and tooling resources.
+このリポジトリは Docker 上の PHP 8.1 で動作するミニマルな Zend Framework 1 Future (ZF1-Future) アプリケーションです。Bootstrap 3 と jQuery を用いたランディングページから、フレームワークやツールに関するリソースへ簡単にアクセスできます。
 
-## Getting Started
+## セットアップ手順
 
-1. Install dependencies (uses the official Composer image so no host PHP is required):
+1. 依存関係をインストールします（公式 Composer イメージを使うためホストに PHP を入れる必要はありません）。
    ```bash
    docker run --rm -v $(pwd):/app composer install
    ```
-2. Launch the application:
+2. アプリケーションを起動します。
    ```bash
    docker-compose up --build
    ```
-   The site becomes available at <http://localhost:8000>. Stop containers with `docker-compose down`.
-3. Update dependencies later with the same Composer command. If you need a clean slate, run `docker-compose down --volumes` before reinstalling.
+   起動後は <http://localhost:8000> でアクセスできます。停止するときは `docker-compose down` を実行してください。
+3. 依存関係を更新したい場合も同じ Composer コマンドを使用します。環境を初期化したいときは `docker-compose down --volumes` の後に再インストールしてください。
 
-## Project Layout
+## ディレクトリ構成
 
-- `application/` – MVC code (`controllers/`, `views/`, `layouts/`, and configuration under `configs/`).
-- `public/` – front controller (`index.php`) and `.htaccess` rewrite rules served by Apache.
-- `vendor/` – managed by Composer; omit from commits (see `.gitignore`).
-- `Dockerfile` / `docker-compose.yml` – PHP 8.1 Apache image and service definition mapping container port 80 to host port 8000.
+- `application/` – MVC の中心ディレクトリ。`controllers/`、`views/`、`layouts/`、`configs/` が含まれます。
+- `public/` – フロントコントローラ (`index.php`) と Apache が利用する `.htaccess` リライトルールを配置します。
+- `vendor/` – Composer による依存ディレクトリです。コミットから除外してください（`.gitignore` を参照）。
+- `Dockerfile` / `docker-compose.yml` – PHP 8.1 + Apache イメージと、コンテナの 80 番ポートをホストの 8000 番にマッピングするサービス定義です。
 
-## Development Notes
+## 開発メモ
 
-- Follow the contribution rules in `AGENTS.md` (coding style, testing, commit conventions).
-- Controllers should extend `Zend_Controller_Action`; add matching view scripts under `application/views/scripts/{controller}/{action}.phtml`.
-- Style UI components with Bootstrap 3; jQuery is available for interactivity via CDN includes in the layout template.
-- Add Composer scripts (for tests, code quality, etc.) under the `scripts` section in `composer.json`, then execute them using `docker run --rm -v $(pwd):/app composer <script>`.
+- コーディングスタイルやテスト、コミット規約などは `AGENTS.md` に従ってください。
+- コントローラは `Zend_Controller_Action` を継承し、対応するビュースクリプトを `application/views/scripts/{controller}/{action}.phtml` に配置します。
+- UI コンポーネントには Bootstrap 3 を利用し、レイアウトテンプレートに含まれる CDN 経由の jQuery を活用できます。
+- テストやコード品質チェックなどの Composer スクリプトは `composer.json` の `scripts` セクションに定義し、`docker run --rm -v $(pwd):/app composer <script>` で実行します。
 
-## Commit Expectations
+## PHP フォーマット方針
 
-Each commit must include:
-- A short imperative subject line.
-- An English body paragraph covering motivation, key changes, and test evidence (even if brief). See `AGENTS.md` for full guidance.
+コードレビューを容易にし、プロジェクトの一貫性を保つため、PHP は PSR-12 に基づいて整形します。特に以下を意識してください。
+
+- インデントは 4 スペースとし、タブとの混在を避けます。
+- クラス・関数・メソッドの開き波括弧は行頭に置き、Zend 1 の流儀に合わせます。
+- 新規 PHP ファイルでは可能な限り `declare(strict_types=1);` を先頭に追加します。
+- `use` 宣言はベンダー単位のグループ内でアルファベット順に並べます（PHP/Laminas → サードパーティ → プロジェクト独自）。
+- 各ファイル末尾には空行を 1 行だけ残し、編集時に末尾の空白を削除します。
+
+Docker ワークフローで整形を自動化する手順:
+
+1. PHP_CodeSniffer を開発依存として一度インストールします（既に入っている場合は不要）。
+   ```bash
+   docker run --rm -v $(pwd):/app composer require --dev squizlabs/php_codesniffer
+   ```
+2. コミット前にスタイル違反を自動修正します。
+   ```bash
+   docker run --rm -v $(pwd):/app composer exec -- phpcbf --standard=PSR12 application
+   ```
+
+レポートのみが必要な場合は `phpcbf` の代わりに `phpcs --standard=PSR12` を実行してください。
+
+## コミット時の注意
+
+各コミットには以下を必ず含めます。
+- 命令形で簡潔にまとめたサブジェクト行。
+- 背景・主な変更点・テスト結果を英語で記載した本文段落（簡潔でも構いません）。詳細なガイドラインは `AGENTS.md` を参照してください。
