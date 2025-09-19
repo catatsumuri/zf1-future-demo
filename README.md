@@ -24,6 +24,7 @@ docker run --rm -v $(pwd):/app composer install
   docker-compose up --build
   ```
 - ブラウザから <http://localhost:8000> にアクセスしてください。停止時は `docker-compose down` を実行します。
+- コンテナイメージにはアプリケーションをコピーしていないため、ホストでのコードや `vendor/` の変更が即座に反映されます。
 
 ### 本番コンテナのローカル検証（prod イメージ）
 

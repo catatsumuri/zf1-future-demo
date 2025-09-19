@@ -28,8 +28,7 @@ RUN composer install \
 
 FROM base AS dev
 
-COPY --from=composer-deps /app/vendor ./vendor
-COPY . .
+# Intentionally rely on docker-compose bind mounts for source and vendor during development.
 
 FROM base AS prod
 
