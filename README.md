@@ -8,12 +8,33 @@
    ```bash
    docker run --rm -v $(pwd):/app composer install
    ```
-2. アプリケーションを起動します。
-   ```bash
-   docker-compose up --build
-   ```
-   起動後は <http://localhost:8000> でアクセスできます。停止するときは `docker-compose down` を実行してください。
-3. 依存関係を更新したい場合も同じ Composer コマンドを使用します。環境を初期化したいときは `docker-compose down --volumes` の後に再インストールしてください。
+2. 依存関係を更新したい場合も同じ Composer コマンドを使用します。環境を初期化したいときは `docker-compose down --volumes` の後に再インストールしてください。
+
+## 実行方法
+
+### 開発コンテナ（dev イメージ）
+
+- ソースをホストからマウントしたまま Apache を起動します。
+  ```bash
+  docker-compose up --build
+  ```
+- ブラウザから <http://localhost:8000> にアクセスしてください。停止時は `docker-compose down` を実行します。
+
+### 本番コンテナのローカル検証（prod イメージ）
+
+- prod ステージをビルドして別ポートで動作確認します。
+  ```bash
+  docker-compose -f docker-compose.prod.yml up --build
+  ```
+- アクセス先は <http://localhost:8080> です。終了する場合は `docker-compose -f docker-compose.prod.yml down` を実行します。
+
+### 本番用イメージの個別ビルド
+
+- 将来的に ECR へ push する際は、まずローカルで prod ステージのイメージを作成します。
+  ```bash
+  docker build --target prod -t local/zf1-app:prod .
+  ```
+- 必要に応じて `local/zf1-app:prod` を ECR 向けタグに置き換えて push してください。
 
 ## ディレクトリ構成
 

@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web-prod:
+    build:
+      context: .
+      target: prod
+    ports:
+      - '8080:80'
+    environment:
+      - APPLICATION_ENV=production
