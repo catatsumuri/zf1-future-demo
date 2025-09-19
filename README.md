@@ -42,6 +42,27 @@ docker run --rm -v $(pwd):/app composer install
   ```
 - 必要に応じて `local/zf1-app:prod` を ECR 向けタグに置き換えて push してください。
 
+### AWSキーを使う場合
+
+AWS アカウントの一時クレデンシャルを環境変数に読み込んだ上で、以下のコマンドで ECR へログインし、`latest` タグ付きイメージを push します（`<repository-name>` は実際のリポジトリ名に置き換えてください）。
+
+```bash
+export AWS_ACCOUNT=733069438156
+aws ecr get-login-password --region ap-northeast-1 \
+  | docker login --username AWS --password-stdin \
+    ${AWS_ACCOUNT}.dkr.ecr.ap-northeast-1.amazonaws.com
+
+docker build --target prod -t \
+  ${AWS_ACCOUNT}.dkr.ecr.ap-northeast-1.amazonaws.com/<repository-name>:latest .
+
+# 既存のローカルイメージを使う場合はこちら
+# docker tag local/zf1-app:prod \
+#   ${AWS_ACCOUNT}.dkr.ecr.ap-northeast-1.amazonaws.com/<repository-name>:latest
+
+docker push \
+  ${AWS_ACCOUNT}.dkr.ecr.ap-northeast-1.amazonaws.com/<repository-name>:latest
+```
+
 ## ディレクトリ構成
 
 - `application/` – MVC の中心ディレクトリ。`controllers/`、`views/`、`layouts/`、`configs/` が含まれます。
