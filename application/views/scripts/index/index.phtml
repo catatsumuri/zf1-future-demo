@@ -1,2 +1,47 @@
-<h1><?php echo $this->escape($this->message); ?></h1>
-<p>The application is powered by <strong>zf1-future</strong>.</p>
+<div class="jumbotron text-center">
+    <h1><?php echo $this->escape($this->message); ?></h1>
+    <p class="lead">Bootstrap 3 と jQuery を活用したデモリンク集です。Docker 環境で素早く UI を試せます。</p>
+    <p>
+        <a class="btn btn-primary btn-lg" href="https://github.com/shardj/zf1-future" target="_blank" rel="noopener">View zf1-future on GitHub</a>
+        <a class="btn btn-default btn-lg" href="https://packagist.org/packages/shardj/zf1-future" target="_blank" rel="noopener">Composer Package</a>
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">アプリケーションフロー</div>
+            <div class="list-group">
+                <a class="list-group-item" href="/" title="IndexController::indexAction">トップページ（現在地）</a>
+                <a class="list-group-item" href="https://framework.zend.com/manual/1.12/en/zend.controller.quickstart.html" target="_blank" rel="noopener">Controller Quickstart</a>
+                <a class="list-group-item" href="https://framework.zend.com/manual/1.12/en/zend.view.quickstart.html" target="_blank" rel="noopener">View Quickstart</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">UI コンポーネント</div>
+            <div class="list-group">
+                <a class="list-group-item" href="https://getbootstrap.com/docs/3.4/components/#buttons" target="_blank" rel="noopener">Bootstrap Buttons</a>
+                <a class="list-group-item" href="https://getbootstrap.com/docs/3.4/components/#nav" target="_blank" rel="noopener">Navigation Patterns</a>
+                <a class="list-group-item" href="https://api.jquery.com/category/effects/" target="_blank" rel="noopener">jQuery Effects API</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">ローカル開発</div>
+            <div class="list-group">
+                <a class="list-group-item" href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose Docs</a>
+                <a class="list-group-item" href="https://getcomposer.org/doc/" target="_blank" rel="noopener">Composer User Guide</a>
+                <a class="list-group-item" href="https://github.com/shardj/zf1-future#readme" target="_blank" rel="noopener">zf1-future README</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <p class="text-muted">サンプルリンクを編集して、独自のデモページへ差し替えてください。</p>
+    </div>
+</div>

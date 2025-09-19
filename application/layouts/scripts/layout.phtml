@@ -3,8 +3,34 @@
 <head>
     <meta charset="utf-8">
     <title>zf1-future Sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-KCkUFqgF0pJgA4bfGxZQnuPxNAKid+GNsq4CPGK/c/pYZHi1DHPezu2LYmAbzNfD" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f7f8fa;
+        }
+        footer {
+            margin-top: 48px;
+            padding: 24px 0;
+            color: #7f8c8d;
+        }
+    </style>
 </head>
 <body>
-<?php echo $this->layout()->content; ?>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">ZF1 Future Demo</a>
+            </div>
+        </div>
+    </nav>
+    <main class="container">
+        <?php echo $this->layout()->content; ?>
+    </main>
+    <footer class="container text-center">
+        <p>Built with <a href="https://packagist.org/packages/shardj/zf1-future" target="_blank" rel="noopener">zf1-future</a> &amp; Docker Compose.</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3gJwYp2JZr+T1xvOT+Q9G6v5joctWcYxRykWPF6vKE8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-fm0C40SwQgqi1P0uh2znLXCxGr8pczTYng3IvuX4Ykzj0EL2Cw7nUksnktdM8xGc" crossorigin="anonymous"></script>
 </body>
 </html>
