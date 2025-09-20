@@ -4,9 +4,12 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN set -eux; \
     a2enmod rewrite; \
+    a2enmod headers; \
     sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf; \
     sed -ri 's!/var/www/!${APACHE_DOCUMENT_ROOT}/!g' /etc/apache2/apache2.conf; \
     sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf; \
+    printf '%s\n' '<IfModule mod_headers.c>' '    RequestHeader set X-Task expr=%%{reqenv:HOSTNAME}' '</IfModule>' > /etc/apache2/conf-available/x-task-header.conf; \
+    a2enconf x-task-header; \
     docker-php-ext-install pdo_mysql
 
 WORKDIR /var/www/html
