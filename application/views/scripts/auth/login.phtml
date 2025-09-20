@@ -5,17 +5,22 @@
                 <h1 class="panel-title">Log in</h1>
             </div>
             <div class="panel-body">
-                <p class="text-muted">Authentication will be added soon. For now, this page acts as a placeholder for the upcoming login flow.</p>
-                <form>
+                <p class="text-muted">デモ用アカウントでログインすると、ナビゲーションにユーザー名が表示されます。</p>
+                <?php if (!empty($this->error)) : ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo $this->escape($this->error); ?>
+                    </div>
+                <?php endif; ?>
+                <form method="post" action="<?php echo $this->url(['controller' => 'auth', 'action' => 'login'], null, true); ?>">
                     <div class="form-group">
                         <label for="login-email">Email address</label>
-                        <input type="email" id="login-email" class="form-control" placeholder="you@example.com" disabled>
+                        <input type="email" id="login-email" name="email" class="form-control" placeholder="you@example.com" value="<?php echo $this->escape((string) $this->email); ?>" required autofocus>
                     </div>
                     <div class="form-group">
                         <label for="login-password">Password</label>
-                        <input type="password" id="login-password" class="form-control" placeholder="********" disabled>
+                        <input type="password" id="login-password" name="password" class="form-control" placeholder="********" required>
                     </div>
-                    <button type="button" class="btn btn-primary" disabled>Sign in</button>
+                    <button type="submit" class="btn btn-primary">Sign in</button>
                 </form>
             </div>
         </div>

@@ -2,6 +2,14 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+    protected function _initAutoload(): Zend_Application_Module_Autoloader
+    {
+        return new Zend_Application_Module_Autoloader([
+            'namespace' => 'Application',
+            'basePath' => APPLICATION_PATH,
+        ]);
+    }
+
     protected function _initDb(): ?Zend_Db_Adapter_Abstract
     {
         $adapterName = getenv('DB_ADAPTER') ?: 'pdo_mysql';
@@ -29,6 +37,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             error_log('Database bootstrap failed: ' . $exception->getMessage());
 
             return null;
+        }
+    }
+
+    protected function _initSession(): void
+    {
+        if (!Zend_Session::isStarted()) {
+            Zend_Session::start();
         }
     }
 }
