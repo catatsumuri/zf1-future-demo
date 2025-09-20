@@ -20,6 +20,46 @@
     </style>
 </head>
 <body>
+    <?php
+        $auth = Zend_Auth::getInstance();
+        $identity = $auth->hasIdentity() ? $auth->getIdentity() : null;
+        $displayName = '';
+
+        if (is_array($identity)) {
+            $displayName = (string) ($identity['name'] ?? $identity['email'] ?? '');
+        } elseif (is_object($identity)) {
+            if (property_exists($identity, 'name')) {
+                $displayName = (string) $identity->name;
+            } elseif (property_exists($identity, 'email')) {
+                $displayName = (string) $identity->email;
+            }
+        }
+
+        /** @var Zend_Controller_Action_Helper_FlashMessenger $flashHelper */
+        $flashHelper = $this->flashMessenger();
+        $rawMessages = array_merge($flashHelper->getMessages(), $flashHelper->getCurrentMessages());
+        $flashHelper->clearCurrentMessages();
+
+        $preparedMessages = [];
+
+        foreach ($rawMessages as $message) {
+            if (is_array($message)) {
+                foreach ($message as $type => $text) {
+                    $preparedMessages[] = [
+                        'type' => (string) $type,
+                        'text' => (string) $text,
+                    ];
+                }
+
+                continue;
+            }
+
+            $preparedMessages[] = [
+                'type' => 'info',
+                'text' => (string) $message,
+            ];
+        }
+    ?>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -28,11 +68,34 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About</a></li>
-                <li><a href="/auth/login">Log in</a></li>
+                <li><a href="/test">Test</a></li>
+                <?php if ($displayName !== '') : ?>
+                    <li class="navbar-text hidden-sm hidden-xs">ようこそ、<?php echo $this->escape($displayName); ?> さん</li>
+                    <li class="navbar-text hidden-md hidden-lg">ようこそ、<?php echo $this->escape($displayName); ?> さん</li>
+                    <li><a href="/auth/logout">Log out</a></li>
+                <?php else : ?>
+                    <li><a href="/auth/login">Log in</a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>
     <main class="container">
+        <?php foreach ($preparedMessages as $message) : ?>
+            <?php
+                $bootstrapTypeMap = [
+                    'success' => 'success',
+                    'info' => 'info',
+                    'warning' => 'warning',
+                    'error' => 'danger',
+                ];
+                $type = strtolower($message['type']);
+                $alertClass = $bootstrapTypeMap[$type] ?? 'info';
+            ?>
+            <div class="alert alert-<?php echo $this->escape($alertClass); ?> alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?php echo $this->escape($message['text']); ?>
+            </div>
+        <?php endforeach; ?>
         <?php echo $this->layout()->content; ?>
     </main>
     <footer class="container text-center">

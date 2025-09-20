@@ -26,6 +26,18 @@ docker run --rm -v $(pwd):/app composer install
 - ブラウザから <http://localhost:8000> にアクセスしてください。停止時は `docker-compose down` を実行します。
 - コンテナイメージにはアプリケーションをコピーしていないため、ホストでのコードや `vendor/` の変更が即座に反映されます。
 
+### 初期データ投入
+
+ログイン機能を利用する前に、ユーザーテーブルと初期アカウントを投入してください。
+
+1. 先に `docker-compose up --build` でコンテナを起動します。
+2. 別ターミナルで次のコマンドを実行します。
+   ```bash
+   docker-compose exec -T web php scripts/seed_users.php
+   ```
+
+スクリプトは `users` テーブルを作成し、`admin@example.com / パスワード` と `test@example.com / password` の 2 ユーザーを登録します。コマンドは冪等なので、必要なら何度でも実行できます。
+
 ### 本番コンテナのローカル検証（prod イメージ）
 
 - prod ステージをビルドして別ポートで動作確認します。

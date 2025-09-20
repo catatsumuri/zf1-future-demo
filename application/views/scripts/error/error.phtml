@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h1 class="panel-title">Oops!</h1>
+            </div>
+            <div class="panel-body">
+                <p><?php echo $this->escape($this->message); ?></p>
+                <?php if (isset($this->exception)) : ?>
+                    <pre style="white-space: pre-wrap;"><?php echo $this->escape((string) $this->exception); ?></pre>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
