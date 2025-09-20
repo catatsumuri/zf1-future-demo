@@ -89,6 +89,20 @@ docker push \
 - UI コンポーネントには Bootstrap 3 を利用し、レイアウトテンプレートに含まれる CDN 経由の jQuery を活用できます。
 - テストやコード品質チェックなどの Composer スクリプトは `composer.json` の `scripts` セクションに定義し、`docker run --rm -v $(pwd):/app composer <script>` で実行します。
 
+## セッション共有の設定
+
+複数コンテナやサーバーでセッションを共有したい場合は、Zend Session をデータベース保存ハンドラに切り替えます。`application/configs/application.ini` で `session.save_handler = "db"` を有効化すると、`Bootstrap` が `Zend_Session_SaveHandler_DbTable` を組み込みます。
+
+1. セッションテーブルを作成するには次のスクリプトを実行します（冪等です）。
+   ```bash
+   docker-compose exec -T web php scripts/migrate_sessions.php
+   ```
+   テーブルは `sessions`（主キー `session_id`、`modified` の補助インデックス、セッションデータ用 `LONGBLOB`）として作成されます。別名で運用したい場合はスクリプトを参考に調整してください。
+2. `application/configs/application.ini` のコメントアウトを外し、必要に応じてテーブル名やカラム名を調整します。
+3. サブドメイン間でクッキーを共有する場合は `session.cookie.domain` に共通のドメイン（例: `.example.com`）を設定します。HTTPS 導入時は `session.cookie.secure = 1` を設定してください。
+
+テーブルが存在しない場合はログに警告を出して従来どおりファイルベースのセッションにフォールバックします。手動でテーブルを用意する場合の DDL は `scripts/migrate_sessions.php` を参照してください。
+
 ## PHP フォーマット方針
 
 コードレビューを容易にし、プロジェクトの一貫性を保つため、PHP は PSR-12 に基づいて整形します。特に以下を意識してください。
