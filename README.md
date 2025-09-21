@@ -101,6 +101,7 @@ docker push \
 
 - コーディングスタイルやテスト、コミット規約などは `AGENTS.md` に従ってください。
 - コントローラは `Zend_Controller_Action` を継承し、対応するビュースクリプトを `application/views/scripts/{controller}/{action}.phtml` に配置します。
+- Docker イメージでは `mod_remoteip` を有効化し、`X-Forwarded-For` からクライアント IP を復元するよう構成しているため、ALB 配下でもアクセスログに実 IP が記録されます。
 - UI コンポーネントには Bootstrap 3 を利用し、レイアウトテンプレートに含まれる CDN 経由の jQuery を活用できます。
 - テストやコード品質チェックなどの Composer スクリプトは `composer.json` の `scripts` セクションに定義し、`docker run --rm -v $(pwd):/app composer <script>` で実行します。
 
