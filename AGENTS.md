@@ -10,6 +10,7 @@
 - `docker run --rm -v $(pwd):/app composer install` : 依存ライブラリをホスト PHP なしでインストールします。
 - `docker-compose up --build` : Web コンテナを `http://localhost:8000` で起動し、依存が変わった際は再ビルドします。
 - `docker-compose exec -T web curl -sSf http://localhost` : コンテナ内部からの簡易ヘルスチェックです。
+- `docker-compose exec web php --version` : コンテナ内の PHP バージョン確認や CLI 実行に利用します（例: `docker-compose exec web php -l path/to/file.php`）。
 
 ## コーディングスタイルと命名規則
 - PHP 8.1 を対象とし、PSR-12（4 スペースインデント、波括弧は改行）に従います。可能な箇所では strict types を検討してください。

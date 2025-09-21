@@ -26,6 +26,21 @@ docker run --rm -v $(pwd):/app composer install
 - ブラウザから <http://localhost:8000> にアクセスしてください。停止時は `docker-compose down` を実行します。
 - コンテナイメージにはアプリケーションをコピーしていないため、ホストでのコードや `vendor/` の変更が即座に反映されます。
 
+### ヘルスチェックエンドポイント
+
+- `/healthz` は liveness 判定専用です。アプリケーションが起動していれば 200 と `OK` を返します。
+- `/readyz` は readiness 判定専用です。データベース接続と簡易クエリ（`SELECT 1`）に成功した場合のみ 200 と `READY` を返し、失敗時は 503 を返します。
+- ローカル動作確認例:
+  ```bash
+  docker-compose exec -T web curl -sSf http://localhost/healthz
+  docker-compose exec -T web curl -sSf http://localhost/readyz
+  ```
+- コンテナ外から確認する場合はポート 8000 を経由して次を実行します。
+  ```bash
+  curl -sSf http://localhost:8000/healthz
+  curl -sSf http://localhost:8000/readyz
+  ```
+
 ### 初期データ投入
 
 ログイン機能を利用する前に、ユーザーテーブルと初期アカウントを投入してください。
@@ -86,6 +101,7 @@ docker push \
 
 - コーディングスタイルやテスト、コミット規約などは `AGENTS.md` に従ってください。
 - コントローラは `Zend_Controller_Action` を継承し、対応するビュースクリプトを `application/views/scripts/{controller}/{action}.phtml` に配置します。
+- Docker イメージでは `mod_remoteip` を有効化し、`X-Forwarded-For` からクライアント IP を復元するよう構成しているため、ALB 配下でもアクセスログに実 IP が記録されます。
 - UI コンポーネントには Bootstrap 3 を利用し、レイアウトテンプレートに含まれる CDN 経由の jQuery を活用できます。
 - テストやコード品質チェックなどの Composer スクリプトは `composer.json` の `scripts` セクションに定義し、`docker run --rm -v $(pwd):/app composer <script>` で実行します。
 
