@@ -40,6 +40,53 @@ $environmentVariables = $this->environmentVariables ?? [];
 if (!empty($environmentVariables)) {
     ksort($environmentVariables);
 }
+
+$sessionTrace = $this->sessionTrace ?? [];
+$configuredSessionOptions = [];
+$runtimeSessionOptions = [];
+$sessionHandler = [];
+
+if (isset($sessionTrace['configured']) && is_array($sessionTrace['configured'])) {
+    $configuredSessionOptions = $sessionTrace['configured'];
+}
+
+if (isset($sessionTrace['runtime']) && is_array($sessionTrace['runtime'])) {
+    $runtimeSessionOptions = $sessionTrace['runtime'];
+}
+
+if (isset($sessionTrace['handler']) && is_array($sessionTrace['handler'])) {
+    $sessionHandler = $sessionTrace['handler'];
+}
+
+if (!function_exists('__test_flatten_options')) {
+    function __test_flatten_options(array $values, string $prefix = ''): array
+    {
+        $flattened = [];
+
+        foreach ($values as $key => $value) {
+            $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
+
+            if (is_array($value)) {
+                $flattened += __test_flatten_options($value, $path);
+            } else {
+                $flattened[$path] = $value;
+            }
+        }
+
+        return $flattened;
+    }
+}
+
+$configuredSessionOptions = __test_flatten_options($configuredSessionOptions);
+$runtimeSessionOptions = __test_flatten_options($runtimeSessionOptions);
+
+if (!empty($configuredSessionOptions)) {
+    ksort($configuredSessionOptions);
+}
+
+if (!empty($runtimeSessionOptions)) {
+    ksort($runtimeSessionOptions);
+}
 ?>
 
 <?php if (!empty($connectionParams)): ?>
@@ -80,4 +127,84 @@ if (!empty($environmentVariables)) {
         <?php endforeach; ?>
         </tbody>
     </table>
+<?php endif; ?>
+
+<?php if (!empty($sessionTrace)): ?>
+    <h2>Session Diagnostics</h2>
+
+    <?php if (!empty($configuredSessionOptions)): ?>
+        <h3>Configured Options (`application.ini`)</h3>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($configuredSessionOptions as $option => $value): ?>
+                <tr>
+                    <td><?php echo $this->escape($option); ?></td>
+                    <td><code><?php echo $this->escape((string) $value); ?></code></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    <?php if (!empty($runtimeSessionOptions)): ?>
+        <h3>Runtime Options (`Zend_Session::getOptions()`)</h3>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($runtimeSessionOptions as $option => $value): ?>
+                <tr>
+                    <td><?php echo $this->escape($option); ?></td>
+                    <td><code><?php echo $this->escape((string) $value); ?></code></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    <h3>Save Handler</h3>
+    <dl class="dl-horizontal">
+        <dt>Status</dt>
+        <dd><?php echo $this->escape($sessionHandler['status'] ?? 'unknown'); ?></dd>
+
+        <?php if (isset($sessionHandler['class'])): ?>
+            <dt>Class</dt>
+            <dd><code><?php echo $this->escape((string) $sessionHandler['class']); ?></code></dd>
+        <?php endif; ?>
+
+        <?php if (isset($sessionHandler['message'])): ?>
+            <dt>Message</dt>
+            <dd><?php echo $this->escape((string) $sessionHandler['message']); ?></dd>
+        <?php endif; ?>
+    </dl>
+
+    <?php if (isset($sessionHandler['driver']) && is_array($sessionHandler['driver'])): ?>
+        <?php $driver = $sessionHandler['driver']; ?>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($driver as $property => $value): ?>
+                    <tr>
+                        <td><?php echo $this->escape($property); ?></td>
+                        <td><code><?php echo $this->escape(is_scalar($value) || $value === null ? (string) $value : json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)); ?></code></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 <?php endif; ?>
