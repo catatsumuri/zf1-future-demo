@@ -7,6 +7,10 @@ RUN set -eux; \
     sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf; \
     sed -ri 's!/var/www/!${APACHE_DOCUMENT_ROOT}/!g' /etc/apache2/apache2.conf; \
     sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf; \
+    printf '%s\n' "SetEnvIf Request_URI \"^/(healthz|readyz)$\" dontlog" \
+        > /etc/apache2/conf-available/healthchecks-dontlog.conf; \
+    a2enconf healthchecks-dontlog; \
+    sed -ri 's#CustomLog ${APACHE_LOG_DIR}/access.log combined#CustomLog ${APACHE_LOG_DIR}/access.log combined env=!dontlog#g' /etc/apache2/sites-available/*.conf; \
     docker-php-ext-install pdo_mysql
 
 WORKDIR /var/www/html
