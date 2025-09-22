@@ -46,4 +46,60 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             Zend_Session::start();
         }
     }
+
+    protected function _initStorage(): Application_Service_Storage_StorageInterface
+    {
+        $options = $this->getOptions();
+        $uploads = $options['uploads'] ?? [];
+        $backend = strtolower((string) ($uploads['backend'] ?? 'local'));
+
+        if ($backend === 's3') {
+            $storage = $this->createS3Storage($uploads);
+        } else {
+            $path = $uploads['path'] ?? APPLICATION_PATH . '/../data/uploads';
+            $storage = new Application_Service_Storage_LocalStorage($path);
+        }
+
+        Zend_Registry::set('storage', $storage);
+
+        return $storage;
+    }
+
+    private function createS3Storage(array $uploads): Application_Service_Storage_StorageInterface
+    {
+        if (!class_exists('Aws\\S3\\S3Client')) {
+            throw new RuntimeException('Aws\\S3\\S3Client is required for the S3 storage backend.');
+        }
+
+        $config = $uploads['s3'] ?? [];
+        $bucket = (string) ($config['bucket'] ?? '');
+
+        if ($bucket === '') {
+            throw new RuntimeException('uploads.s3.bucket must be configured.');
+        }
+
+        $clientConfig = [
+            'version' => $config['version'] ?? 'latest',
+            'region' => $config['region'] ?? 'ap-northeast-1',
+        ];
+
+        if (!empty($config['endpoint'])) {
+            $clientConfig['endpoint'] = $config['endpoint'];
+        }
+
+        if (!empty($config['profile'])) {
+            $clientConfig['profile'] = $config['profile'];
+        } elseif (!empty($config['credentials']['key']) && !empty($config['credentials']['secret'])) {
+            $clientConfig['credentials'] = [
+                'key' => $config['credentials']['key'],
+                'secret' => $config['credentials']['secret'],
+            ];
+        }
+
+        $client = new Aws\S3\S3Client($clientConfig);
+        $prefix = (string) ($config['prefix'] ?? '');
+        $acl = (string) ($config['acl'] ?? 'private');
+
+        return new Application_Service_Storage_S3Storage($client, $bucket, $prefix, $acl);
+    }
 }

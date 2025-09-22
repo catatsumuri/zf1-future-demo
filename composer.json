@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "php": "^8.1",
-        "shardj/zf1-future": "^1.21"
+        "shardj/zf1-future": "^1.21",
+        "aws/aws-sdk-php": "^3.298"
     },
     "autoload": {
         "classmap": [

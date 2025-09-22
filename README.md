@@ -90,6 +90,36 @@ docker push \
   ${AWS_ACCOUNT}.dkr.ecr.ap-northeast-1.amazonaws.com/<repository-name>:latest
 ```
 
+## アップロードストレージの切り替え
+
+アップロード機能は `application/configs/application.ini` の設定でローカルディスクと Amazon S3 を切り替えられます。デフォルトはローカルディレクトリ (`APPLICATION_PATH/../data/uploads`) です。
+
+1. 依存関係に AWS SDK を追加済みなので、最新の `composer install` を実行しベンダーライブラリを揃えてください。
+   ```bash
+   docker run --rm -v $(pwd):/app composer install
+   ```
+2. ローカル保存のまま運用する場合は `uploads.backend = "local"` と `uploads.path` を調整します。
+3. S3 を利用する場合は以下のように設定を更新し、必要に応じて `prefix` や `acl` を調整します。
+   ```ini
+   uploads.backend = "s3"
+   uploads.s3.bucket = "your-bucket-name"
+   uploads.s3.prefix = "optional/prefix"
+   uploads.s3.region = "ap-northeast-1"
+   ; 任意: 明示的なエンドポイントや資格情報
+   ;uploads.s3.endpoint = "https://s3.ap-northeast-1.amazonaws.com"
+   ;uploads.s3.profile = "default"
+   ;uploads.s3.credentials.key = "..."
+   ;uploads.s3.credentials.secret = "..."
+   ```
+   認証情報は IAM ロール、~/.aws/credentials のプロファイル、または `uploads.s3.credentials.*` に直接記載するいずれかの方法で解決されます。
+4. 設定を変更したらコンテナを再起動します。
+   ```bash
+   docker-compose down
+   docker-compose up --build
+   ```
+
+アップロード画面下部に現在の保存先が表示されるので、切り替え後は実際の保存先 (`s3://` またはローカルパス) が反映されているか確認してください。
+
 ## ディレクトリ構成
 
 - `application/` – MVC の中心ディレクトリ。`controllers/`、`views/`、`layouts/`、`configs/` が含まれます。
